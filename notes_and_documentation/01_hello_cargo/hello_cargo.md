@@ -1,5 +1,5 @@
 #
-# [Back](./../notes.md)
+# [Back](./../../README.md)
 
 ## Cargo: Rust's build system
 * Also, package manager
@@ -71,4 +71,4 @@ cargo check
 * Great for checking your code while editing to speed up development time.
 
 #
-# [Back](./../notes.md)
+# [Back](./../../README.md)

@@ -1,7 +1,8 @@
 # Table of contents
-* [Hello World](./00_hello_world/hello_world.md)
-* [Cargo](./01_hello_cargo/hello_cargo.md)
-* [Guessing Game](./02_guessing_game/guessing_game.md)
+* Notes and documentation
+    * [Hello World](./notes_and_documentation/00_hello_world/hello_world.md)
+    * [Cargo](./notes_and_documentation/01_hello_cargo/hello_cargo.md)
+    * [Guessing Game](./notes_and_documentation/02_guessing_game/guessing_game.md)
 
 # HUGE NOTES
 ## lints in Cargo.toml files to ignore stupid warnings

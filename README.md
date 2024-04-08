@@ -5,6 +5,8 @@
     * [Guessing Game](./notes_and_documentation/02_guessing_game/guessing_game.md)
     * [Bevy Build Notes](./notes_and_documentation/03_bevy_build_notes/bevy_build_notes.md)
     * [Bevy Intro Notes](./notes_and_documentation/04_bevy_intro_notes/bevy_intro_notes.md)
+        * [Bevy Plugin Notes](./notes_and_documentation/04_bevy_intro_notes/bevy_plugin_notes.md)
+        * [Bevy Resource Notes](./notes_and_documentation/04_bevy_intro_notes/bevy_resource_notes.md)
 
 # HUGE NOTES
 ## lints in Cargo.toml files to ignore stupid warnings

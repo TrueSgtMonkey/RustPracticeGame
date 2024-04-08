@@ -1,0 +1,3 @@
+main_branch: main
+prune_count: 4
+rebase_branch: origin/main

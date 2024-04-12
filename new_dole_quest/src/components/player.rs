@@ -22,19 +22,19 @@ fn setup_player(mut commands: Commands) {
 }
 
 fn handle_movement (keyboard_input: Res<ButtonInput<KeyCode>>, action_map: Res<ActionMap>) {
-    if keyboard_input.pressed(action_map.get_key(Action::MoveUp)) {
+    if keyboard_input.pressed(action_map.get_key(KeyAction::MoveUp)) {
         println!("Move Up")
     }
 
-    if keyboard_input.pressed(action_map.get_key(Action::MoveDown)) {
+    if keyboard_input.pressed(action_map.get_key(KeyAction::MoveDown)) {
         println!("Move Down")
     }
 
-    if keyboard_input.pressed(action_map.get_key(Action::MoveRight)) {
+    if keyboard_input.pressed(action_map.get_key(KeyAction::MoveRight)) {
         println!("Move Right")
     }
 
-    if keyboard_input.pressed(action_map.get_key(Action::MoveLeft)) {
+    if keyboard_input.pressed(action_map.get_key(KeyAction::MoveLeft)) {
         println!("Move Left")
     }
 }

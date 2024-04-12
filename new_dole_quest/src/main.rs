@@ -5,10 +5,6 @@ use bevy::window::WindowResolution;
 pub mod components;
 pub mod actions;
 
-// TODO: Remove -- just for reference
-// #[derive(Resource)]
-// struct GreetTimer(Timer);
-
 fn main() {
     App::new().insert_resource(ActionMap::new())
         .add_plugins(DefaultPlugins.set(WindowPlugin {
@@ -34,14 +30,3 @@ fn main() {
         .add_plugins(components::ComponentsPlugin)
         .run();
 }
-
-// TODO: Remove -- just for reference
-// pub fn has_user_input(
-//     keyboard_input: Res<ButtonInput<KeyCode>>,
-//     mouse_button_input: Res<ButtonInput<MouseButton>>,
-//     touch_input: Res<Touches>,
-// ) -> bool {
-//     keyboard_input.just_pressed(KeyCode::Space)
-//         || mouse_button_input.just_pressed(MouseButton::Left)
-//         || touch_input.any_just_pressed()
-// }

@@ -13,7 +13,7 @@ impl Plugin for ObjectPlugin {
 }
 
 fn setup_object(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let object_texture: Handle<Image> = asset_server.load("open_source_assets/tilesets/tree.png");
+    let object_texture: Handle<Image> = asset_server.load("open_source_assets/tree.png");
 
     commands.spawn((
             StaticEntity::default(),

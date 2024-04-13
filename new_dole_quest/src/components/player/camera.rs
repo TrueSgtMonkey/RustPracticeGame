@@ -25,6 +25,9 @@ fn setup_camera(mut commands: Commands) {
         ));
 }
 
+/**
+    This function updates camera position with change from player's velocity
+*/
 fn move_camera_with_player (
     mut camera: Query<&mut Transform, With<CameraEntity>>,
     player_group: Query<&CharacterEntity, With<PlayerEntity>>,

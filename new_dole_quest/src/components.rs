@@ -25,6 +25,7 @@ impl Default for StaticEntity {
 pub struct CharacterEntity {
     pub velocity: Vec2,
     pub speed: f32,
+    pub sprint_multiplier: f32,
 }
 
 impl Default for CharacterEntity {
@@ -34,6 +35,7 @@ impl Default for CharacterEntity {
                 ..Default::default()
             },
             speed: 1.0f32,
+            sprint_multiplier: 2.0f32,
         }
     }
 }

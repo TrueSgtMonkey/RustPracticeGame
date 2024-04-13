@@ -15,6 +15,7 @@ pub enum KeyAction {
     MoveDown,
     MoveLeft,
     MoveRight,
+    Pause,
     MaxSize,
 }
 
@@ -24,10 +25,11 @@ impl KeyAction {
     */
     pub fn get_key_action_from_str(str_var: &str) -> KeyAction {
         match str_var {
-            "MoveUp" => KeyAction::MoveUp,
-            "MoveDown" => KeyAction::MoveDown,
-            "MoveLeft" => KeyAction::MoveLeft,
+            "MoveUp"    => KeyAction::MoveUp,
+            "MoveDown"  => KeyAction::MoveDown,
+            "MoveLeft"  => KeyAction::MoveLeft,
             "MoveRight" => KeyAction::MoveRight,
+            "Pause"     => KeyAction::Pause,
             _ => KeyAction::MaxSize,
         }
     }
@@ -37,11 +39,12 @@ impl KeyAction {
     */
     pub fn get_str_from_key_action(key_action: KeyAction) -> String {
         match key_action {
-            KeyAction::MoveUp => "MoveUp".to_string(),
-            KeyAction::MoveDown => "MoveDown".to_string(),
-            KeyAction::MoveLeft => "MoveLeft".to_string(),
+            KeyAction::MoveUp    => "MoveUp".to_string(),
+            KeyAction::MoveDown  => "MoveDown".to_string(),
+            KeyAction::MoveLeft  => "MoveLeft".to_string(),
             KeyAction::MoveRight => "MoveRight".to_string(),
-            KeyAction::MaxSize => "MaxSize".to_string(),
+            KeyAction::Pause     => "Pause".to_string(),
+            KeyAction::MaxSize   => "MaxSize".to_string(),
         }
     }
 }
@@ -102,12 +105,17 @@ impl ActionMap {
     }
 }
 
+/**
+    This function parses a config file and loads in the correct Code
+    (KeyCode/MouseButton/Etc...) for each Action
+    (KeyAction/MouseAction/Etc...).
+*/
 // TODO: Refactor perhaps? Split into different functions?
 fn parse_contents(filename: &str) -> ActionMap {
     let mut read_mode: ReadMode = ReadMode::Keyboard;
     let mut action_map: ActionMap = ActionMap {
-        key_map: [KeyCode::KeyW, KeyCode::KeyS, KeyCode::KeyA, KeyCode::KeyD],
-        mouse_map: [MouseButton::Left],
+        key_map: [KeyCode::KeyW;KeyAction::MaxSize as usize],
+        mouse_map: [MouseButton::Left;MouseAction::MaxSize as usize],
     };
 
     for line in std::fs::read_to_string(filename).unwrap().lines() {

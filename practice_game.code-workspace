@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"rust-analyzer.linkedProjects": [
+			".\\new_dole_quest\\Cargo.toml",
+			".\\new_dole_quest\\Cargo.toml"
+		]
+	}
+}

@@ -3,6 +3,7 @@
 use bevy::prelude::*; // need this even in submodules
 use crate::actions::*;
 use crate::components::CharacterEntity;
+use crate::animation::AnimationIndices;
 
 pub mod camera;
 
@@ -18,13 +19,37 @@ impl Plugin for PlayerPlugin {
     }
 }
 
-fn setup_player(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let player_texture: Handle<Image> = asset_server.load("player/player_model/direction_0000.png");
+fn setup_player(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
+)
+{
+    let player_texture: Handle<Image> = asset_server.load("player/player_model/player_animation.png");
+    let layout = TextureAtlasLayout::from_grid(Vec2::new(128.0, 128.0), 1, 8, None, None);
+    let texture_atlas_layout = texture_atlas_layouts.add(layout);
+    let animation_indices = AnimationIndices {
+        first: 0,
+        last: 7
+    };
+
     commands.spawn(
         (
             PlayerEntity, 
             SpriteSheetBundle {
                 texture: player_texture,
+                transform: Transform {
+                    scale: Vec3 {
+                        x: 0.5,
+                        y: 0.5,
+                        z: 0.5,
+                    },
+                    ..Default::default()
+                },
+                atlas: TextureAtlas {
+                    layout: texture_atlas_layout,
+                    index: animation_indices.first,
+                },
                 ..Default::default()
             },
             CharacterEntity {

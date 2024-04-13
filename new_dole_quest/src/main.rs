@@ -1,9 +1,11 @@
 use actions::ActionMap;
 use bevy::{prelude::*, window::WindowMode};
 use bevy::window::WindowResolution;
+use crate::animation::*;
 
 pub mod components;
 pub mod actions;
+pub mod animation;
 
 fn main() {
     App::new().insert_resource(ActionMap::new())

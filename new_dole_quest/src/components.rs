@@ -7,6 +7,11 @@ use object::ObjectPlugin;
 const DEBUG_PRINT_KEYS:  bool = false;
 const DEBUG_PRINT_MOUSE: bool = false;
 
+const BASELINE_SIZE_COMPONENT: Vec2 = Vec2 {
+    x: 64.0,
+    y: 64.0,
+};
+
 pub mod player;
 pub mod object;
 

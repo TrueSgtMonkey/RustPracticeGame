@@ -2,7 +2,7 @@
 
 use bevy::prelude::*; // need this even in submodules
 use crate::actions::*;
-use crate::components::CharacterEntity;
+use crate::components::{CharacterEntity, BASELINE_SIZE_COMPONENT};
 use crate::animation::AnimationIndices;
 
 pub mod camera;
@@ -26,7 +26,8 @@ fn setup_player(
 )
 {
     let player_texture: Handle<Image> = asset_server.load("player/player_model/player_animation.png");
-    let layout = TextureAtlasLayout::from_grid(Vec2::new(128.0, 128.0), 1, 8, None, None);
+    let tile_size: Vec2 = Vec2::new(256.0, 256.0);
+    let layout = TextureAtlasLayout::from_grid(tile_size, 1, 8, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let animation_indices = AnimationIndices {
         first: 0,
@@ -40,9 +41,9 @@ fn setup_player(
                 texture: player_texture,
                 transform: Transform {
                     scale: Vec3 {
-                        x: 0.5,
-                        y: 0.5,
-                        z: 0.5,
+                        x: BASELINE_SIZE_COMPONENT.x / tile_size.x,
+                        y: BASELINE_SIZE_COMPONENT.y / tile_size.y,
+                        ..Default::default()
                     },
                     ..Default::default()
                 },

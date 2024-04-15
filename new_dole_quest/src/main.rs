@@ -1,7 +1,7 @@
 use actions::ActionMap;
 use bevy::{prelude::*, window::WindowMode};
 use bevy::window::WindowResolution;
-use crate::animation::*;
+use animation::unit_angle::UnitAnglesEights;
 
 pub mod components;
 pub mod actions;
@@ -9,6 +9,7 @@ pub mod animation;
 
 fn main() {
     App::new().insert_resource(ActionMap::new())
+        .insert_resource(UnitAnglesEights::new())
         .add_plugins(DefaultPlugins.set(WindowPlugin {
         // TODO: Make most of these windows attributes non-static values
         primary_window: Some(Window {
@@ -29,6 +30,6 @@ fn main() {
     }).set(
         ImagePlugin::default_nearest()
     ))
-        .add_plugins(components::ComponentsPlugin)
+        .add_plugins((components::ComponentsPlugin, animation::AnimationPlugin))
         .run();
 }

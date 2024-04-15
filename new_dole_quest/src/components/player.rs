@@ -4,14 +4,16 @@ use std::time::Duration;
 
 use bevy::prelude::*; // need this even in submodules
 use crate::actions::*;
-use crate::components::{CharacterEntity, BASELINE_SIZE_COMPONENT};
+use crate::components::CharacterEntity;
 use crate::animation::AnimationIndices;
 use crate::animation::sprite_animation::AnimatedEntity;
 
 pub mod camera;
 
-const START_ANGLE_WALK: usize = 0;
-const START_ANGLE_IDLE: usize = 8;
+const START_ANGLE_WALK: usize   = 0;
+const START_ANGLE_IDLE: usize   = 8;
+const START_ANGLE_SPRINT: usize = 16;
+const START_ANGLE_MAX: usize    = 24;
 
 pub struct PlayerPlugin;
 
@@ -34,7 +36,7 @@ fn setup_player(
     let player_texture: Handle<Image> = asset_server.load("player/player_model/player_animation.png");
     let tile_size: Vec2 = Vec2::new(64.0, 64.0);
     let hframes: usize = 12;
-    let vframes: usize = 16;
+    let vframes: usize = START_ANGLE_MAX;
     let layout = TextureAtlasLayout::from_grid(tile_size, hframes, vframes, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let animation_indices = AnimationIndices {
@@ -63,7 +65,7 @@ fn setup_player(
             },
             CharacterEntity {
                 speed: 135.0f32,
-                sprint_multiplier: 1.75,
+                sprint_multiplier: 2.0,
                 direction: Vec2 {
                     x: 0f32,
                     y: -1f32,
@@ -94,9 +96,11 @@ fn change_player_velocity (
     };
 
     let mut sprint_multiplier: f32 = 1.0;
+    let mut is_sprinting: bool = false;
     if keyboard_input.pressed(action_map.get_key(KeyAction::Sprint)) {
         for (player, _animated_entity) in &player_group {
             sprint_multiplier = player.sprint_multiplier;
+            is_sprinting = true;
         }
     }
 
@@ -132,6 +136,6 @@ fn change_player_velocity (
     for (mut player, mut animated_entity) in &mut player_group {
         player.direction = velocity.normalize_or_zero();
         player.velocity = player.direction * player.speed * sprint_multiplier;
-        animated_entity.curr_start_angle = START_ANGLE_WALK;
+        animated_entity.curr_start_angle = if !is_sprinting {START_ANGLE_WALK} else {START_ANGLE_SPRINT};
     }
 }

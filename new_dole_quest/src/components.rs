@@ -31,6 +31,8 @@ impl Default for StaticEntity {
 
 impl Plugin for ComponentsPlugin {
     fn build(&self, app: &mut App) {
+        println!("Baseline size for sprites: {:?}", BASELINE_SIZE_COMPONENT);
+
         app.add_plugins((
             CameraPlugin,
             PlayerPlugin,

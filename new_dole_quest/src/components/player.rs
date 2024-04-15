@@ -18,7 +18,9 @@ const START_ANGLE_MAX: usize    = 24;
 pub struct PlayerPlugin;
 
 #[derive(Component)]
-pub struct PlayerEntity;
+pub struct PlayerEntity {
+    sick: usize,
+}
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
@@ -46,7 +48,9 @@ fn setup_player(
 
     commands.spawn(
         (
-            PlayerEntity, 
+            PlayerEntity {
+                sick: 0,
+            }, 
             SpriteSheetBundle {
                 texture: player_texture,
                 transform: Transform {

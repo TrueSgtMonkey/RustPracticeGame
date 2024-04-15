@@ -1,12 +1,21 @@
 # Monster Masher
 ## Story
-* Will be a pokemon-like game with a "serious" (ridiculous) story
-* bloody - you are trapped on a hell-scape of a land with creatures that
-  can easily kill you.
-* Unfortunately, you can do little to fight against them, so you must
-  capture monsters and use them to fight other monsters/people.
-* Will have option to spare the other people you come across?
-* If all your monsters die, the monster will kill you.
+* You have been kidnapped and brought to an island in which most likely you will die.
+* Luckily, you find some weapons to fight off a horde of strange creatures.
+
+## Gameplay
+### Combat: Hold right click to aim and shoot your gun.
+  * You are stuck in place while aiming your gun, but the game is reactive enough that this is not an issue.
+  * A crosshair will show up, and you will shoot in that direction.
+    * From the player to the crosshair.
+
+### Combat: Health system
+* When you are hit by an enemy, your "sick" meter increases.
+* When it fills all the way up, you become infected and need to find a vaccine before you become one of the creatures.
+* If you become a creature, you are stuck that way for the rest of the game.
+  * The game will turn endless, and you can do whatever you want on the island.
+  * You will be able to talk to the creatures that are still alive.
+  * If you become a creature due to the last boss, then you will fly off the island and possibly spread the creature virus to the world.
 
 # Table of contents
 * Notes and documentation

@@ -4,7 +4,7 @@ use bevy::prelude::*; // need this even in submodules
 pub struct AnimatedEntity {
     pub frame_ready: bool,
     pub frame_num: usize,
-    pub curr_ani_start_frame: usize,
+    pub curr_start_angle: usize,
     pub total_sprite_frames: usize,
     pub hframes: usize,
     pub vframes: usize,
@@ -119,11 +119,11 @@ impl AnimatedEntity {
         // getting current frame of animation playing -- regardless of angle
         iso_params.curr_frame = self.frame_num % (self.hframes * iso_params.angle_increase);
 
-        // shifting angle -- usually used for playing separate animations
+        // shift angle -- usually used to play separate animations
         // angle_increase represents the amount of rows the animation takes up
         iso_params.row = iso_params.start_angle + iso_params.curr_angle * iso_params.angle_increase;
 
-        // finding the correct 
+        // find the current angle and frame, and then change animation
         self.frame_num = iso_params.curr_frame + (iso_params.curr_angle * self.hframes * iso_params.angle_increase);
         self.frame_num += iso_params.start_angle * self.hframes;
     }
@@ -134,7 +134,7 @@ impl Default for AnimatedEntity {
         Self {
             frame_ready: true,
             frame_num: 0,
-            curr_ani_start_frame: 0,
+            curr_start_angle: 0,
             total_sprite_frames: 1,
             hframes: 1,
             vframes: 1,

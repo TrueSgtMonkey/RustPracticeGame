@@ -36,7 +36,7 @@ fn animate_characters(
         }
 
         let angle: usize = unit_angle.get_numeric_direction_angle(&character.direction);
-        let st_angle: usize = animated_entity.curr_ani_start_frame;
+        let st_angle: usize = animated_entity.curr_start_angle;
         let frame_increase: isize = animated_entity.curr_frame_increase;
         let angle_increase: usize = animated_entity.angle_increase;
         animated_entity.iso_animation(angle, st_angle, frame_increase, angle_increase);

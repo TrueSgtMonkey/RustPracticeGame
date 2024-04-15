@@ -10,6 +10,9 @@ use crate::animation::sprite_animation::AnimatedEntity;
 
 pub mod camera;
 
+const START_ANGLE_WALK: usize = 0;
+const START_ANGLE_IDLE: usize = 8;
+
 pub struct PlayerPlugin;
 
 #[derive(Component)]
@@ -29,9 +32,9 @@ fn setup_player(
 )
 {
     let player_texture: Handle<Image> = asset_server.load("player/player_model/player_animation.png");
-    let tile_size: Vec2 = Vec2::new(256.0, 256.0);
+    let tile_size: Vec2 = Vec2::new(64.0, 64.0);
     let hframes: usize = 12;
-    let vframes: usize = 8;
+    let vframes: usize = 16;
     let layout = TextureAtlasLayout::from_grid(tile_size, hframes, vframes, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let animation_indices = AnimationIndices {
@@ -45,11 +48,11 @@ fn setup_player(
             SpriteSheetBundle {
                 texture: player_texture,
                 transform: Transform {
-                    scale: Vec3 {
-                        x: BASELINE_SIZE_COMPONENT.x / tile_size.x,
-                        y: BASELINE_SIZE_COMPONENT.y / tile_size.y,
-                        ..Default::default()
-                    },
+                    // scale: Vec3 {
+                    //     x: tile_size.x,
+                    //     y: tile_size.y,
+                    //     ..Default::default()
+                    // },
                     ..Default::default()
                 },   
                 atlas: TextureAtlas {
@@ -81,7 +84,7 @@ fn setup_player(
 fn change_player_velocity (
     keyboard_input: Res<ButtonInput<KeyCode>>, 
     action_map: Res<ActionMap>, 
-    mut player_group: Query<&mut CharacterEntity, With<PlayerEntity>>
+    mut player_group: Query<(&mut CharacterEntity, &mut AnimatedEntity), With<PlayerEntity>>
 )
 {
     let mut input_count: u8 = 0;
@@ -92,7 +95,7 @@ fn change_player_velocity (
 
     let mut sprint_multiplier: f32 = 1.0;
     if keyboard_input.pressed(action_map.get_key(KeyAction::Sprint)) {
-        for player in &player_group {
+        for (player, _animated_entity) in &player_group {
             sprint_multiplier = player.sprint_multiplier;
         }
     }
@@ -119,14 +122,16 @@ fn change_player_velocity (
 
     // no keys were entered -- velocity will be 0
     if input_count == 0 {
-        for mut player in &mut player_group {
+        for (mut player, mut animated_entity) in &mut player_group {
             player.velocity = velocity;
+            animated_entity.curr_start_angle = START_ANGLE_IDLE;
         }
         return;
     }
 
-    for mut player in &mut player_group {
+    for (mut player, mut animated_entity) in &mut player_group {
         player.direction = velocity.normalize_or_zero();
         player.velocity = player.direction * player.speed * sprint_multiplier;
+        animated_entity.curr_start_angle = START_ANGLE_WALK;
     }
 }

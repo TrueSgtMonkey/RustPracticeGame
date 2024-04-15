@@ -21,6 +21,10 @@ pub struct UnitAnglesEights {
     angles: [f32; NUM_UNIT_ANGLES]
 }
 
+// TODO: Backport this back into Godot because this is FAR more efficient to
+//       just do at the beginning of the game -- probably make a new class for
+//       it in Godot with these and put it into a singleton that everyone
+//       can access??
 impl UnitAnglesEights {
     pub fn new() -> Self {
         Self {

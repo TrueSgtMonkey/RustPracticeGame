@@ -1,9 +1,12 @@
 // use super::<super_trait>; // include stuff from module above this one
 
+use std::time::Duration;
+
 use bevy::prelude::*; // need this even in submodules
 use crate::actions::*;
 use crate::components::{CharacterEntity, BASELINE_SIZE_COMPONENT};
 use crate::animation::AnimationIndices;
+use crate::animation::sprite_animation::AnimatedEntity;
 
 pub mod camera;
 
@@ -27,7 +30,9 @@ fn setup_player(
 {
     let player_texture: Handle<Image> = asset_server.load("player/player_model/player_animation.png");
     let tile_size: Vec2 = Vec2::new(256.0, 256.0);
-    let layout = TextureAtlasLayout::from_grid(tile_size, 1, 8, None, None);
+    let hframes: usize = 12;
+    let vframes: usize = 8;
+    let layout = TextureAtlasLayout::from_grid(tile_size, hframes, vframes, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
     let animation_indices = AnimationIndices {
         first: 0,
@@ -46,7 +51,7 @@ fn setup_player(
                         ..Default::default()
                     },
                     ..Default::default()
-                },
+                },   
                 atlas: TextureAtlas {
                     layout: texture_atlas_layout,
                     index: animation_indices.first,
@@ -56,6 +61,17 @@ fn setup_player(
             CharacterEntity {
                 speed: 135.0f32,
                 sprint_multiplier: 1.75,
+                direction: Vec2 {
+                    x: 0f32,
+                    y: -1f32,
+                },
+                ..Default::default()
+            },
+            AnimatedEntity {
+                hframes: hframes,
+                vframes: vframes,
+                total_sprite_frames: hframes * vframes,
+                timer: Timer::new(Duration::from_secs_f32(0.0416667f32), TimerMode::Repeating),
                 ..Default::default()
             },
         )
@@ -109,8 +125,8 @@ fn change_player_velocity (
         return;
     }
 
-    velocity = velocity.normalize_or_zero();
     for mut player in &mut player_group {
-        player.velocity = velocity * player.speed * sprint_multiplier;
+        player.direction = velocity.normalize_or_zero();
+        player.velocity = player.direction * player.speed * sprint_multiplier;
     }
 }

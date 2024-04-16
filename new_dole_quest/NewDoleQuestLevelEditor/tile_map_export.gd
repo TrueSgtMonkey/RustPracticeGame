@@ -2,11 +2,9 @@ extends Node2D
 
 @export var tile_map_name: String = "TileMap"
 @export var collision_map_name: String = "CollisionMap"
-@export var path: String = "res://Maps/"
+@export var path: String = "C:\\Users\\foreskin\\Desktop\\sum_good_shit\\programming\\rust\\practice_game\\new_dole_quest\\assets\\maps\\"
 @export var map_name: String = "map"
 @export var map_extension: String = ".map2d"
-@export var map_collision_extension: String = "_collision.col"
-@export var map_header_extension: String = "_header.cfg"
 
 var tile_map: TileMap = null
 var collision_map: TileMap = null
@@ -23,9 +21,33 @@ func _ready():
 		printerr("Cannot find: ", path)
 		return
 
-	generate_tiles(0)
-	generate_headers()
-	generate_collisions(0)
+	var captured_tile_groups: Dictionary = {
+		"tiles": {},
+		"collisions": [],
+	}
+	
+	# Combine tiles into rectangular groups to reduce map file size
+	var file: FileAccess = FileAccess.open(path + map_name + map_extension, FileAccess.WRITE)
+	for id in tile_map.tile_set.get_source_count():
+		captured_tile_groups["tiles"][id] = []
+		combine_tiles(0, tile_map, id, captured_tile_groups["tiles"][id])
+	
+	# collisions will only have 1 ID
+	combine_tiles(0, collision_map, 1, captured_tile_groups["collisions"])
+
+	# Print out results into a map file
+	file.store_line("[header]")
+	generate_headers(file)
+	file.store_line("\n[tiles]")
+	for id in captured_tile_groups["tiles"]:
+		for group in captured_tile_groups["tiles"][id]:
+			file.store_line(str(id) + ":" + str(group))
+	
+	file.store_line("\n[collisions]")
+	for group in captured_tile_groups["collisions"]:
+		file.store_line(str(group))
+	
+	file.close()
 	
 func is_directory_good() -> bool:
 	var dir = DirAccess.open(path)
@@ -43,8 +65,9 @@ func generate_tiles(layer: int):
 		
 	file.close()
 
-func generate_collisions(layer: int):
-	var cells = collision_map.get_used_cells_by_id(layer, 1)
+# Combine the tiles into vertical strips first
+func combine_tiles(layer: int, gen_tile_map: TileMap, id: int, captured_groups: Array):
+	var cells = gen_tile_map.get_used_cells_by_id(layer, id)
 	
 	# Will increment 1 each iteration on y-axis
 	cells.sort()
@@ -65,27 +88,27 @@ func generate_collisions(layer: int):
 		last_cell = cell
 	
 	# Combing through the rest of the values on the x-axis
-	generate_rectangle_collisions(groups)
-	
-func generate_rectangle_collisions(groups: Array):
-	var col_file: FileAccess = FileAccess.open(path + map_name + map_collision_extension, FileAccess.WRITE)
+	generate_rectangular_tile_groups(groups, captured_groups)
 
+# Combine the strips generated in combine_tiles to rectangles
+func generate_rectangular_tile_groups(groups: Array, captured_groups: Array):
 	var check_idx: int = 1
-	var collected_groups: Array = []
 	while groups.size() > 0:
 		var group_min: Vector2i = groups[0][0]
 		var group_max: Vector2i = groups[0][1]
-		var iterations: int = 1
+		
+		# need this to generate rectangles with width > 2
+		var x_axis_iterations: int = 1
 		while check_idx < groups.size():
 			var next_group_min: Vector2i = groups[check_idx][0]
 			var next_group_max: Vector2i = groups[check_idx][1]
 			var group_min_diff: Vector2i = next_group_min - group_min
 			
 			# cannot be a rectangle if this is true
-			if group_min_diff.x > iterations:
+			if group_min_diff.x > x_axis_iterations:
 				break
 			# keep checking further-along x-axes - skip this index
-			elif group_min_diff.x <= (iterations-1):
+			elif group_min_diff.x <= (x_axis_iterations-1):
 				check_idx += 1
 				continue
 				
@@ -102,22 +125,15 @@ func generate_rectangle_collisions(groups: Array):
 			groups[0][1] = group_max
 			groups.pop_at(check_idx)
 			
-			# now only look at x-axis coordinates two units away
-			iterations += 1
+			# Created a valid rect - check next index to see if rect can be wider
+			x_axis_iterations += 1
 
-		collected_groups.append(groups.pop_front())
+		captured_groups.append(groups.pop_front())
 		check_idx = 1
-		
-	for group in collected_groups:
-		col_file.store_line(str(group))
-
-	col_file.close()
 
 # Goes through the tileset's textures and prints to the format:
 # "<texture_id>:<file_path>"
-func generate_headers():
-	var header_file: FileAccess = FileAccess.open(path + map_name + map_header_extension, FileAccess.WRITE)
-	
+func generate_headers(file: FileAccess):
 	for tile_set_id in tile_map.tile_set.get_source_count():
 		var atlas: TileSetAtlasSource = tile_map.tile_set.get_source(tile_set_id)
 		var dir = DirAccess.open(".") # Get project directory
@@ -126,6 +142,4 @@ func generate_headers():
 		current_dir = current_dir.substr(last_slash)
 		var formatted_path: String = atlas.texture.resource_path.substr(6)
 		
-		header_file.store_line(str(tile_set_id) + ":\"" + current_dir + "/" + formatted_path + "\"")
-		
-	header_file.close()
+		file.store_line(str(tile_set_id) + ":\"" + current_dir + "/" + formatted_path + "\"")

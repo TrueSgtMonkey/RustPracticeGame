@@ -6,6 +6,7 @@ use animation::unit_angle::UnitAnglesEights;
 pub mod components;
 pub mod actions;
 pub mod animation;
+pub mod maps;
 
 fn main() {
     App::new().insert_resource(ActionMap::new())

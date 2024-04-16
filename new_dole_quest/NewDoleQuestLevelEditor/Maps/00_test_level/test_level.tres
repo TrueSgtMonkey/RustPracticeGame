@@ -1,0 +1,21 @@
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://bvym146k0wf26"]
+
+[ext_resource type="Texture2D" uid="uid://dxmivcdrcjuik" path="res://assets/textures/0000_blood_rock.png" id="1_ienhr"]
+[ext_resource type="Texture2D" uid="uid://bqnhbosdp0if5" path="res://assets/textures/0001_machine_board.png" id="2_kfqbd"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rqdxi"]
+texture = ExtResource("1_ienhr")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_eh67j"]
+texture = ExtResource("2_kfqbd")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+
+[resource]
+tile_size = Vector2i(32, 32)
+custom_data_layer_0/name = "collision"
+custom_data_layer_0/type = 2
+sources/0 = SubResource("TileSetAtlasSource_rqdxi")
+sources/1 = SubResource("TileSetAtlasSource_eh67j")

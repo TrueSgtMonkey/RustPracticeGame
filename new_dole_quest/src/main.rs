@@ -1,7 +1,9 @@
 use actions::ActionMap;
+use bevy::sprite::Material2dPlugin;
 use bevy::{prelude::*, window::WindowMode};
 use bevy::window::WindowResolution;
 use animation::unit_angle::UnitAnglesEights;
+use maps::map_material::MapMaterial;
 
 pub mod components;
 pub mod actions;
@@ -31,6 +33,7 @@ fn main() {
     }).set(
         ImagePlugin::default_nearest()
     ))
-        .add_plugins((components::ComponentsPlugin, animation::AnimationPlugin))
+        .init_asset::<MapMaterial>() // custom initialized resources need to be here
+        .add_plugins((components::ComponentsPlugin, animation::AnimationPlugin, maps::MapPlugin))
         .run();
 }

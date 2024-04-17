@@ -13,7 +13,8 @@ pub mod maps;
 fn main() {
     App::new().insert_resource(ActionMap::new())
         .insert_resource(UnitAnglesEights::new())
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
+        .add_plugins((
+            DefaultPlugins.set(WindowPlugin {
         // TODO: Make most of these windows attributes non-static values
         primary_window: Some(Window {
             resolution: WindowResolution::new(800.0, 600.0),
@@ -32,7 +33,7 @@ fn main() {
         ..default()
     }).set(
         ImagePlugin::default_nearest()
-    ))
+    ), Material2dPlugin::<MapMaterial>::default()))
         .init_asset::<MapMaterial>() // custom initialized resources need to be here
         .add_plugins((components::ComponentsPlugin, animation::AnimationPlugin, maps::MapPlugin))
         .run();

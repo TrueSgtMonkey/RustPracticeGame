@@ -1,4 +1,4 @@
-use bevy::{prelude::*, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
+use bevy::{prelude::*, render::render_resource::Texture, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
 //use std::vec::Vec;
 
 use super::map_material::MapMaterial;
@@ -40,7 +40,7 @@ fn map_pre_setup(mut commands: Commands) {
 // Spawn an entity using `CustomMaterial`.
 fn map_setup(
     mut commands: Commands, 
-    mut materials: ResMut<Assets<ColorMaterial>>, 
+    mut materials: ResMut<Assets<MapMaterial>>, 
     map_builder: Res<MapBuilder>, 
     asset_server: Res<AssetServer>, 
     mut assets_meshes: ResMut<Assets<Mesh>>
@@ -52,23 +52,26 @@ fn map_setup(
     let collision_groups: &Vec<(Vec2, Vec2)> = &map_builder.collision_groups;
 
     for (id, min_vec, max_vec) in tile_groups {
-        println!("{:?};{:?}", *min_vec, *max_vec);
+        let diff_vec: Vec2 = Vec2 {
+            x: (max_vec.x - min_vec.x),
+            y: (max_vec.y - min_vec.y),
+        };
         let dimensions: Vec2 = Vec2 {
-            x: (max_vec.x - min_vec.x) * 32f32,
-            y: (max_vec.y - min_vec.y) * 32f32,
+            x: diff_vec.x * 32f32,
+            y: diff_vec.y * 32f32,
         };
         let averages: Vec2 = Vec2 {
-            x: (max_vec.x - min_vec.x) * 0.5f32,
-            y: (max_vec.y - min_vec.y) * 0.5f32
+            x: diff_vec.x * 0.5f32,
+            y: diff_vec.y * 0.5f32
         };
         commands.spawn(MaterialMesh2dBundle {
             mesh: Mesh2dHandle(assets_meshes.add(Rectangle::new(dimensions.x + 32.0f32, dimensions.y + 32.0f32))),
-            // material: materials.add(MapMaterial {
-            //     id: *id,
-            //     color: Color::RED,
-            //     texture: asset_server.load(&map_materials[*id]),
-            // }),
-            material: materials.add(Color::hsl(180f32 * (*id as f32), 0.95, 0.7)),
+            material: materials.add(MapMaterial {
+                color: Color::WHITE,
+                texture: asset_server.load(&map_materials[*id]),
+                mesh_dimensions: Vec2::new(1f32, 1f32),
+            }),
+            //material: materials.add(Color::hsl(67f32 * (*id as f32), 0.95, 0.7)),
             transform: Transform {
                 translation: Vec3::new((min_vec.x + averages.x) * 32.0f32, (min_vec.y + averages.y) * -32.0f32, -((*id + 1) as f32)),
                 ..Default::default()
@@ -76,11 +79,4 @@ fn map_setup(
             ..Default::default()
         });
     }
-    // commands.spawn(MaterialMesh2dBundle {
-    //     material: materials.add(MapMaterial {
-    //         color: Color::RED,
-    //         color_texture: asset_server.load("textures/0000_blood_rock.png"),
-    //     }),
-    //     ..Default::default()
-    // });
 }

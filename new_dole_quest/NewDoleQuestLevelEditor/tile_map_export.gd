@@ -41,13 +41,19 @@ func _ready():
 	file.store_line("\n[tiles]")
 	for id in captured_tile_groups["tiles"]:
 		for group in captured_tile_groups["tiles"][id]:
-			file.store_line(str(id) + ":" + str(group))
+			file.store_line(str(id) + ":" + get_tuple_as_string(group))
 	
 	file.store_line("\n[collisions]")
 	for group in captured_tile_groups["collisions"]:
-		file.store_line(str(group))
+		file.store_line(get_tuple_as_string(group))
 	
 	file.close()
+	
+func get_tuple_as_string(group: Array) -> String:
+	if group.size() != 2:
+		return ""
+		
+	return str(group[0]) + ";" + str(group[1])
 	
 func is_directory_good() -> bool:
 	var dir = DirAccess.open(path)
@@ -142,4 +148,4 @@ func generate_headers(file: FileAccess):
 		current_dir = current_dir.substr(last_slash)
 		var formatted_path: String = atlas.texture.resource_path.substr(6)
 		
-		file.store_line(str(tile_set_id) + ":\"" + current_dir + "/" + formatted_path + "\"")
+		file.store_line(str(tile_set_id) + ":.." + current_dir + "/" + formatted_path)

@@ -94,6 +94,8 @@ fn change_player_velocity (
 )
 {
     let mut input_count: u8 = 0;
+    let mut dir_count_x: i8 = 0;
+    let mut dir_count_y: i8 = 0;
     let mut velocity: Vec2 = Vec2 {
         x: 0.0f32,
         y: 0.0f32
@@ -111,25 +113,29 @@ fn change_player_velocity (
     if keyboard_input.pressed(action_map.get_key(KeyAction::MoveUp)) {
         velocity.y += 1f32;
         input_count += 1;
+        dir_count_y += 1;
     }
 
     if keyboard_input.pressed(action_map.get_key(KeyAction::MoveDown)) {
         velocity.y += -1f32;
         input_count += 1;
+        dir_count_y -= 1;
     }
 
     if keyboard_input.pressed(action_map.get_key(KeyAction::MoveRight)) {
         velocity.x += 1f32;
         input_count += 1;
+        dir_count_x += 1;
     }
 
     if keyboard_input.pressed(action_map.get_key(KeyAction::MoveLeft)) {
         velocity.x += -1f32;
         input_count += 1;
+        dir_count_x -= 1;
     }
 
     // no keys were entered -- velocity will be 0
-    if input_count == 0 {
+    if input_count == 0 || (dir_count_x == 0 && dir_count_y == 0) {
         for (mut player, mut animated_entity) in &mut player_group {
             player.velocity = velocity;
             animated_entity.curr_start_angle = START_ANGLE_IDLE;

@@ -85,11 +85,6 @@ impl UnitAnglesEights {
     }
 }
 
-/**
-    This is a shortcut function. The x-axis for the ranges is the low value
-    for that range, and the y-axis for the ranges is the high value for that
-    range
-*/
 fn is_between(direction: &Vec2, low_x: f32, high_x: f32, low_y: f32, high_y: f32) -> bool {
     (direction.x >= low_x && direction.x <= high_x) &&
         (direction.y >= low_y && direction.y <= high_y)

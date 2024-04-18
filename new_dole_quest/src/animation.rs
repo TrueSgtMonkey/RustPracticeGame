@@ -10,12 +10,6 @@ pub struct AnimationPlugin;
 
 pub mod unit_angle;
 
-#[derive(Component)]
-pub struct AnimationIndices {
-    pub first: usize,
-    pub last: usize,
-}
-
 impl Plugin for AnimationPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, animate_characters);

@@ -1,5 +1,6 @@
 // use super::<super_trait>; // include stuff from module above this one
-use bevy::prelude::*; use crate::components::CharacterEntity;
+use bevy::prelude::*;
+use crate::components::CharacterEntity;
 use super::PlayerEntity;
 
 pub struct CameraPlugin;
@@ -31,13 +32,11 @@ fn setup_camera(mut commands: Commands) {
 fn move_camera_with_player (
     mut camera: Query<&mut Transform, With<CameraEntity>>,
     player_group: Query<&CharacterEntity, With<PlayerEntity>>,
-    time: Res<Time>,
 ) {
     for mut transform in &mut camera {
         for player in &player_group {
-            let change: Vec2 = player.velocity * time.delta_seconds();
-            transform.translation.x += change.x;
-            transform.translation.y += change.y;
+            transform.translation.x = player.position.x;
+            transform.translation.y = player.position.y;
         }
         //println!("{:?}", transform.translation);
     }

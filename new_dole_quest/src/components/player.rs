@@ -5,15 +5,14 @@ use std::time::Duration;
 use bevy::prelude::*; // need this even in submodules
 use crate::actions::*;
 use crate::components::CharacterEntity;
-use crate::animation::AnimationIndices;
 use crate::animation::sprite_animation::AnimatedEntity;
 
 pub mod camera;
 
-const START_ANGLE_WALK: usize   = 0;
-const START_ANGLE_IDLE: usize   = 8;
-const START_ANGLE_SPRINT: usize = 16;
-const START_ANGLE_MAX: usize    = 24;
+pub const START_ANGLE_WALK: usize   = 0;
+pub const START_ANGLE_IDLE: usize   = 8;
+pub const START_ANGLE_SPRINT: usize = 16;
+pub const START_ANGLE_MAX: usize    = 24;
 
 pub struct PlayerPlugin;
 
@@ -29,7 +28,8 @@ impl Plugin for PlayerPlugin {
     }
 }
 
-fn setup_player(
+// TODO: Figure out a way to call these from the map editor -- spawn entities
+pub fn setup_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
@@ -41,10 +41,6 @@ fn setup_player(
     let vframes: usize = START_ANGLE_MAX;
     let layout = TextureAtlasLayout::from_grid(tile_size, hframes, vframes, None, None);
     let texture_atlas_layout = texture_atlas_layouts.add(layout);
-    let animation_indices = AnimationIndices {
-        first: 0,
-        last: 7
-    };
 
     commands.spawn(
         (
@@ -54,16 +50,16 @@ fn setup_player(
             SpriteSheetBundle {
                 texture: player_texture,
                 transform: Transform {
-                    // scale: Vec3 {
-                    //     x: tile_size.x,
-                    //     y: tile_size.y,
-                    //     ..Default::default()
-                    // },
+                    translation: Vec3 {
+                        x: -128f32,
+                        y: -128f32,
+                        z: 1.0f32,
+                    },
                     ..Default::default()
                 },   
                 atlas: TextureAtlas {
                     layout: texture_atlas_layout,
-                    index: animation_indices.first,
+                    index: 0,
                 },
                 ..Default::default()
             },
@@ -74,6 +70,8 @@ fn setup_player(
                     x: 0f32,
                     y: -1f32,
                 },
+                width: tile_size.x,
+                height: tile_size.y,
                 ..Default::default()
             },
             AnimatedEntity {
@@ -87,7 +85,7 @@ fn setup_player(
     );
 }
 
-fn change_player_velocity (
+pub fn change_player_velocity (
     keyboard_input: Res<ButtonInput<KeyCode>>, 
     action_map: Res<ActionMap>, 
     mut player_group: Query<(&mut CharacterEntity, &mut AnimatedEntity), With<PlayerEntity>>
@@ -144,6 +142,7 @@ fn change_player_velocity (
     }
 
     for (mut player, mut animated_entity) in &mut player_group {
+        // need this direction for the animation to play correctly
         player.direction = velocity.normalize_or_zero();
         player.velocity = player.direction * player.speed * sprint_multiplier;
         animated_entity.curr_start_angle = if !is_sprinting {START_ANGLE_WALK} else {START_ANGLE_SPRINT};

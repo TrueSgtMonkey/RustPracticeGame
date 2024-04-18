@@ -2,12 +2,14 @@ extends Node2D
 
 @export var tile_map_name: String = "TileMap"
 @export var collision_map_name: String = "CollisionMap"
+@export var entity_map_name: String = "EntityMap"
 @export var path: String = "C:\\Users\\foreskin\\Desktop\\sum_good_shit\\programming\\rust\\practice_game\\new_dole_quest\\assets\\maps\\"
 @export var map_name: String = "map"
 @export var map_extension: String = ".map2d"
 
 var tile_map: TileMap = null
 var collision_map: TileMap = null
+var entity_map: TileMap = null
 
 # This will act as our "main" function
 # We want to export a map with IDs at each coordinate -- Vec2:cell_id
@@ -17,13 +19,15 @@ var collision_map: TileMap = null
 func _ready():
 	tile_map = get_node(tile_map_name)
 	collision_map = get_node(collision_map_name)
+	entity_map = get_node(entity_map_name)
+
 	if !is_directory_good():
 		printerr("Cannot find: ", path)
 		return
 
 	var captured_tile_groups: Dictionary = {
 		"tiles": {},
-		"collisions": [],
+		"collisions": []
 	}
 	
 	# Combine tiles into rectangular groups to reduce map file size
@@ -46,6 +50,11 @@ func _ready():
 	file.store_line("\n[collisions]")
 	for group in captured_tile_groups["collisions"]:
 		file.store_line(get_tuple_as_string(group))
+		
+	file.store_line("\n[entities]")
+	for id in entity_map.tile_set.get_source_count():
+		for cell in entity_map.get_used_cells_by_id(id):
+			file.store_line(str(id) + ":" + str(cell))
 	
 	file.close()
 	
@@ -82,17 +91,20 @@ func combine_tiles(layer: int, gen_tile_map: TileMap, id: int, captured_groups: 
 	var groups := []
 	var last_cell: Vector2i = cells[0] if cells.size() > 0 else Vector2i.ZERO
 	var current_group := [last_cell, last_cell]
+	var idx := 0
 	for cell in cells:
 		var cell_diff: Vector2i = cell - last_cell
 		if abs(cell_diff.y) <= 1:
 			current_group[1] = cell
-		else:
+		else: # force add last element
 			groups.append(current_group.duplicate())
 			current_group[0] = cell
 			current_group[1] = cell
 			
 		last_cell = cell
+		idx += 1
 	
+	groups.append(current_group.duplicate())
 	# Combing through the rest of the values on the x-axis
 	generate_rectangular_tile_groups(groups, captured_groups)
 

@@ -1,12 +1,11 @@
 use bevy::{prelude::*, render::render_resource::Texture, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
 //use std::vec::Vec;
 
+use crate::{components::collider::Collider, utilities::max};
+
 use super::map_material::MapMaterial;
 
 pub mod parse_map;
-
-const GROUP_MIN: usize = 0;
-const GROUP_MAX: usize = 1;
 
 pub struct MapBuilderPlugin;
 
@@ -41,9 +40,11 @@ fn map_pre_setup(mut commands: Commands) {
 fn map_setup(
     mut commands: Commands, 
     mut materials: ResMut<Assets<MapMaterial>>, 
-    map_builder: Res<MapBuilder>, 
+    mut color_materials: ResMut<Assets<ColorMaterial>>, 
+    mut map_builder: ResMut<MapBuilder>, 
     asset_server: Res<AssetServer>, 
-    mut assets_meshes: ResMut<Assets<Mesh>>
+    mut assets_meshes: ResMut<Assets<Mesh>>,
+
 )
 {
     //fn map_setup(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -79,4 +80,46 @@ fn map_setup(
             ..Default::default()
         });
     }
+
+    let mut iteration: usize = 0;
+    for (min_vec, max_vec) in collision_groups {
+        println!("\niteration: {:?}", iteration);
+        println!("min_vec: {:?}", min_vec);
+        let diff_vec: Vec2 = Vec2 {
+            x: (max_vec.x - min_vec.x),
+            y: (max_vec.y - min_vec.y),
+        };
+        println!("diff_vec: {:?}", diff_vec);
+        let dimensions: Vec2 = Vec2 {
+            x: (diff_vec.x * 32f32) + 32f32,
+            y: (diff_vec.y * 32f32) + 32f32,
+        };
+        println!("dimensions: {:?}", dimensions);
+
+        let color = Color::RED;
+
+
+        commands.spawn(Collider {
+            position: Vec2::new(min_vec.x * 32f32, (min_vec.y + diff_vec.y) * -32f32),
+            width: dimensions.x,
+            height: dimensions.y,
+        });
+        // }, MaterialMesh2dBundle {
+        //     mesh: Mesh2dHandle(assets_meshes.add(Rectangle::new(dimensions.x, dimensions.y))),
+        //     material: color_materials.add(color),
+        //     //material: materials.add(Color::hsl(67f32 * (*id as f32), 0.95, 0.7)),
+        //     transform: Transform {
+        //         translation: Vec3::new((min_vec.x + averages.x) * 32.0f32, (min_vec.y + averages.y) * -32.0f32, 3f32),
+        //         ..Default::default()
+        //     },
+        //     ..Default::default()
+        // },));
+        iteration += 1;
+    }
+
+    // all of this information is now being handled by bevy
+    // create a load function and load a new level in if you want to change levels.
+    map_builder.tile_groups.clear();
+    map_builder.collision_groups.clear();
+    map_builder.materials.clear();
 }

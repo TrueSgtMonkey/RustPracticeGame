@@ -9,6 +9,7 @@ pub mod components;
 pub mod actions;
 pub mod animation;
 pub mod maps;
+pub mod utilities;
 
 fn main() {
     App::new().insert_resource(ActionMap::new())

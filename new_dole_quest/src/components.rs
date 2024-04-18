@@ -17,6 +17,7 @@ const BASELINE_SIZE_COMPONENT: Vec2 = Vec2 {
 
 pub mod player;
 pub mod object;
+pub mod collider;
 
 pub struct ComponentsPlugin;
 

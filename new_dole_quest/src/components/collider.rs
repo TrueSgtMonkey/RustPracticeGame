@@ -21,13 +21,53 @@ impl Collider {
         return false;
     }
 
-    pub fn collision_response(&self, position: &Vec2) -> Vec2 {
-        let dist_vec: Vec2 = Vec2 {
-            x: position.x - self.position.x,
-            y: position.y - self.position.y
-        };
+    pub fn collision_response(&self, velocity: &mut Vec2, position: &Vec2, width: f32, height: f32) {
+        // right
+        let x_max: f32 = position.x + width;
+        let y_max: f32 = position.y + height;
 
-        return dist_vec.normalize_or_zero();
+        if position.x <= self.position.x && velocity.x > 0.0f32 {
+            velocity.x *= -1f32;
+        }
+
+        if x_max >= self.position.x + self.width && velocity.x < 0.0f32 {
+            velocity.x *= -1f32;
+        }
+
+        if position.y <= self.position.y && velocity.y > 0.0f32 {
+            velocity.y *= -1f32;
+        }
+
+        if y_max >= self.position.y + self.height && velocity.y < 0.0f32 {
+            velocity.y *= -1f32;
+        }
     }
+
+    pub fn gigi_collsison_response(&self, velocity: &mut Vec2, position: &Vec2, width: f32, height: f32){
+        let x_max: f32 = position.x + width;
+        let y_max: f32 = position.y + height;
+
+        if position.x <= self.position.x && velocity.x > 0.0f32 {
+            velocity.x = 0.0;
+        }
+
+        if x_max >= self.position.x + self.width && velocity.x < 0.0f32 {
+            velocity.x = 0.0;
+        }
+
+        if position.y <= self.position.y && velocity.y > 0.0f32 {
+            velocity.y = 0.0;
+        }
+
+        if y_max >= self.position.y + self.height && velocity.y < 0.0f32 {
+            velocity.y = 0.0;
+        }
+
+
+
+
+    }
+
+
 }
 

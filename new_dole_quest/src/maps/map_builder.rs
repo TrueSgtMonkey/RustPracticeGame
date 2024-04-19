@@ -25,6 +25,7 @@ impl MapBuilder {
 }
 
 impl Plugin for MapBuilderPlugin {
+    
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, map_pre_setup)
             .add_systems(Startup, map_setup);

@@ -58,8 +58,8 @@ fn move_characters(
         for collider in &colliders {
             //println!("player: {:?} ; collision: {:?}", character.position, collider.position);
             if collider.is_colliding(&character.position, character.width, character.height) {
-                change = collider.collision_response(&character.position) * time.delta_seconds() * character.speed * character.sprint_multiplier;
-                break;
+                //collider.collision_response(&mut change, &character.position, character.width, character.height);
+                collider.gigi_collsison_response(&mut change, &character.position, character.width, character.height);
             }
         }
         

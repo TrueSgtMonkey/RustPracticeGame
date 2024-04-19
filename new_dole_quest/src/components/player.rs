@@ -51,7 +51,7 @@ pub fn setup_player(
                 texture: player_texture,
                 transform: Transform {
                     translation: Vec3 {
-                        x: -128f32,
+                        x: 128f32,
                         y: -128f32,
                         z: 1.0f32,
                     },
@@ -70,8 +70,8 @@ pub fn setup_player(
                     x: 0f32,
                     y: -1f32,
                 },
-                width: tile_size.x,
-                height: tile_size.y,
+                width: 42f32,
+                height: 42f32,
                 ..Default::default()
             },
             AnimatedEntity {

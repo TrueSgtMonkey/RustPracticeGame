@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::render_resource::Texture, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
+use bevy::{prelude::*, render::{render_resource::Texture, texture::{ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor}}, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
 //use std::vec::Vec;
 
 use crate::{components::collider::BoxCollider, utilities::max};
@@ -70,8 +70,25 @@ fn map_setup(
             mesh: Mesh2dHandle(assets_meshes.add(Rectangle::new(dimensions.x + 32.0f32, dimensions.y + 32.0f32))),
             material: materials.add(MapMaterial {
                 color: Color::WHITE,
-                texture: asset_server.load(&map_materials[*id]),
-                mesh_dimensions: Vec2::new(1f32, 1f32),
+                texture: asset_server.load_with_settings(
+                    &map_materials[*id],
+                    |s: &mut ImageLoaderSettings| match &mut s.sampler {
+                        ImageSampler::Default => {
+                            s.sampler = ImageSampler::Descriptor(
+                                ImageSamplerDescriptor {
+                                    address_mode_u: ImageAddressMode::Repeat,
+                                    address_mode_v: ImageAddressMode::Repeat,
+                                    ..Default::default()
+                                }
+                            )
+                        }
+                        ImageSampler::Descriptor(sampler) => {
+                            sampler.address_mode_u = ImageAddressMode::Repeat;
+                            sampler.address_mode_v = ImageAddressMode::Repeat;
+                        }
+                    },
+                ),
+                mesh_dimensions: Vec2::new(diff_vec.x+1f32, diff_vec.y+1f32),
             }),
             //material: materials.add(Color::hsl(67f32 * (*id as f32), 0.95, 0.7)),
             transform: Transform {

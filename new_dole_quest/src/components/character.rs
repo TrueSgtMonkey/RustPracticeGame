@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use super::collider::Collider;
+use super::collider::BoxCollider;
 
 pub struct CharacterPlugin;
 
@@ -13,6 +13,7 @@ pub struct CharacterEntity {
     pub width: f32,
     pub height: f32,
     pub position: Vec2,
+    pub radius: f32, // for sphere collisions
 }
 
 impl Plugin for CharacterPlugin {
@@ -23,7 +24,7 @@ impl Plugin for CharacterPlugin {
 
 impl Default for CharacterEntity {
     fn default() -> Self {
-        Self {
+        let mut character = Self {
             direction: Vec2 {
                 ..Default::default()
             },
@@ -35,7 +36,15 @@ impl Default for CharacterEntity {
             width: 32.0f32,
             height: 32.0f32,
             position: Vec2::new(0f32, 0f32),
-        }
+            radius: 0f32,
+        };
+
+        let width_squared = character.width * character.width;
+        let height_squared = character.height * character.height;
+        character.radius = f32::sqrt(width_squared + height_squared);
+        println!("{:?}", character.radius);
+
+        return character;
     }
 }
 
@@ -49,17 +58,17 @@ impl Default for CharacterEntity {
 */
 fn move_characters(
     mut characters: Query<(&mut CharacterEntity, &mut Transform), With<CharacterEntity>>,
-    colliders: Query<&Collider>,
+    box_colliders: Query<&BoxCollider>,
     time: Res<Time>
 ) 
 {
     for (mut character, mut transform) in &mut characters {
         let mut change: Vec2 = character.velocity * time.delta_seconds();
-        for collider in &colliders {
+        for box_collider in &box_colliders {
             //println!("player: {:?} ; collision: {:?}", character.position, collider.position);
-            if collider.is_colliding(&character.position, character.width, character.height) {
+            if box_collider.is_colliding(&character.position, character.width, character.height) {
                 //collider.collision_response(&mut change, &character.position, character.width, character.height);
-                collider.gigi_collsison_response(&mut change, &character.position, character.width, character.height);
+                box_collider.gigi_collsison_response(&mut change, &character.position, character.width, character.height);
             }
         }
         

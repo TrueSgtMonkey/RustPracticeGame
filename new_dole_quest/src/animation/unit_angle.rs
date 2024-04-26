@@ -27,7 +27,7 @@ pub struct UnitAnglesEights {
 //       can access??
 impl UnitAnglesEights {
     pub fn new() -> Self {
-        Self {
+        let unit_angles: Self = Self {
             num_angles: NUM_UNIT_ANGLES,
             angles: [
                 // x-axis
@@ -50,7 +50,9 @@ impl UnitAnglesEights {
                 -f32::sin(13f32 * PI * 0.125f32) * f32::sin(13f32 * PI * 0.125f32), //6 - negative y-axis
                 -f32::sin(15f32 * PI * 0.125f32) * f32::sin(15f32 * PI * 0.125f32), //7 - negative y-axis
             ]
-        }
+        };
+        println!("angles: {:?}", unit_angles.angles);
+        return unit_angles;
     }
 
     /**

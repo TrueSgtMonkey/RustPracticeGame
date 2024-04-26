@@ -1,7 +1,7 @@
 use bevy::{prelude::*, render::render_resource::Texture, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
 //use std::vec::Vec;
 
-use crate::{components::collider::Collider, utilities::max};
+use crate::{components::collider::BoxCollider, utilities::max};
 
 use super::map_material::MapMaterial;
 
@@ -100,7 +100,7 @@ fn map_setup(
         let color = Color::RED;
 
 
-        commands.spawn(Collider {
+        commands.spawn(BoxCollider {
             position: Vec2::new(min_vec.x * 32f32, (min_vec.y + diff_vec.y) * -32f32),
             width: dimensions.x,
             height: dimensions.y,

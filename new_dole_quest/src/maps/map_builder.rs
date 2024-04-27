@@ -1,11 +1,22 @@
-use bevy::{prelude::*, render::{render_resource::Texture, texture::{ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor}}, sprite::{MaterialMesh2dBundle, Mesh2dHandle}};
-//use std::vec::Vec;
-
-use crate::{components::collider::BoxCollider, utilities::max};
-
+use bevy::{
+    prelude::*, 
+    render::texture::{
+        ImageAddressMode, 
+        ImageLoaderSettings, 
+        ImageSampler, 
+        ImageSamplerDescriptor
+    }, 
+    sprite::{
+        MaterialMesh2dBundle,
+        Mesh2dHandle
+    }
+};
+use crate::components::collider::BoxCollider;
 use super::map_material::MapMaterial;
+use entity_map_builder::EntityId;
 
 pub mod parse_map;
+pub mod entity_map_builder;
 
 pub struct MapBuilderPlugin;
 
@@ -14,6 +25,7 @@ pub struct MapBuilder {
     pub materials: Vec<String>,
     pub tile_groups: Vec<(usize, Vec2, Vec2)>,
     pub collision_groups: Vec<(Vec2, Vec2)>,
+    pub entities: Vec<(usize, Vec2)>,
     pub level_name: String,
 }
 
@@ -28,12 +40,14 @@ impl Plugin for MapBuilderPlugin {
     
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, map_pre_setup)
-            .add_systems(Startup, map_setup);
+            .add_systems(Startup, map_setup)
+            .add_plugins(entity_map_builder::MapEntityPlugin);
     }
 }
 
 fn map_pre_setup(mut commands: Commands) {
-    let map_builder = MapBuilder::new("./assets/maps/test_level.map2d");
+    // TODO: Need to create a level picker and have a unloading/loading system 
+    let map_builder = MapBuilder::new("./assets/maps/000_second_test_map.map2d");
     commands.insert_resource(map_builder);
 }
 
@@ -41,7 +55,6 @@ fn map_pre_setup(mut commands: Commands) {
 fn map_setup(
     mut commands: Commands, 
     mut materials: ResMut<Assets<MapMaterial>>, 
-    mut color_materials: ResMut<Assets<ColorMaterial>>, 
     mut map_builder: ResMut<MapBuilder>, 
     asset_server: Res<AssetServer>, 
     mut assets_meshes: ResMut<Assets<Mesh>>,
@@ -114,24 +127,11 @@ fn map_setup(
         };
         println!("dimensions: {:?}", dimensions);
 
-        let color = Color::RED;
-
-
         commands.spawn(BoxCollider {
             position: Vec2::new(min_vec.x * 32f32, (min_vec.y + diff_vec.y) * -32f32),
             width: dimensions.x,
             height: dimensions.y,
         });
-        // }, MaterialMesh2dBundle {
-        //     mesh: Mesh2dHandle(assets_meshes.add(Rectangle::new(dimensions.x, dimensions.y))),
-        //     material: color_materials.add(color),
-        //     //material: materials.add(Color::hsl(67f32 * (*id as f32), 0.95, 0.7)),
-        //     transform: Transform {
-        //         translation: Vec3::new((min_vec.x + averages.x) * 32.0f32, (min_vec.y + averages.y) * -32.0f32, 3f32),
-        //         ..Default::default()
-        //     },
-        //     ..Default::default()
-        // },));
         iteration += 1;
     }
 

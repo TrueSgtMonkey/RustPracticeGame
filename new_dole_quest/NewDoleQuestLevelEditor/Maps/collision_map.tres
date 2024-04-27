@@ -1,0 +1,15 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://d114cqli02715"]
+
+[ext_resource type="Texture2D" uid="uid://cu2a0fnm0orye" path="res://assets/level_editor_ui/collision_layer.png" id="1_hk2pg"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8y2k5"]
+texture = ExtResource("1_hk2pg")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/custom_data_0 = 1
+
+[resource]
+tile_size = Vector2i(32, 32)
+custom_data_layer_0/name = "collision"
+custom_data_layer_0/type = 2
+sources/1 = SubResource("TileSetAtlasSource_8y2k5")

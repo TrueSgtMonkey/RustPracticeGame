@@ -41,7 +41,9 @@ impl Default for CharacterEntity {
 
         let width_squared = character.width * character.width;
         let height_squared = character.height * character.height;
-        character.radius = f32::sqrt(width_squared + height_squared);
+
+        // Finding the radius -- dividing by 2 to not find diameter instead
+        character.radius = f32::sqrt(width_squared + height_squared) * 0.5f32;
         println!("{:?}", character.radius);
 
         return character;

@@ -23,16 +23,16 @@ pub struct PlayerEntity {
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_player)
-            .add_systems(Update, change_player_velocity);
+        app.add_systems(Update, change_player_velocity);
     }
 }
 
 // TODO: Figure out a way to call these from the map editor -- spawn entities
 pub fn setup_player(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>
+    commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    texture_atlas_layouts: &mut ResMut<Assets<TextureAtlasLayout>>,
+    position: &Vec2,
 )
 {
     let player_texture: Handle<Image> = asset_server.load("player/player_model/player_animation.png");
@@ -51,8 +51,8 @@ pub fn setup_player(
                 texture: player_texture,
                 transform: Transform {
                     translation: Vec3 {
-                        x: 128f32,
-                        y: -128f32,
+                        x: position.x,
+                        y: position.y,
                         z: 1.0f32,
                     },
                     ..Default::default()

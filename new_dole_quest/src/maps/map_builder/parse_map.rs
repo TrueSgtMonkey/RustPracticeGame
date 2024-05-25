@@ -9,6 +9,7 @@ enum MapReadMode {
     Header,
     Tiles,
     Collisions,
+    Entities,
     Error,
 }
 
@@ -18,6 +19,7 @@ impl MapReadMode {
             "[header]" => MapReadMode::Header,
             "[tiles]" => MapReadMode::Tiles,
             "[collisions]" => MapReadMode::Collisions,
+            "[entities]" => MapReadMode::Entities,
             _ => MapReadMode::Error,
         }
     }
@@ -27,6 +29,7 @@ pub fn parse_map(level_name: &str) -> MapBuilder {
     let mut materials: Vec<String> = Vec::new();
     let mut tile_groups: Vec<(usize, Vec2, Vec2)> = Vec::new();
     let mut collision_groups: Vec<(Vec2, Vec2)> = Vec::new();
+    let mut entities: Vec<(usize, Vec2)> = Vec::new();
     let mut read_mode: MapReadMode = MapReadMode::Error;
 
 
@@ -45,6 +48,7 @@ pub fn parse_map(level_name: &str) -> MapBuilder {
             MapReadMode::Header => add_material(&mut materials, &line),
             MapReadMode::Tiles  => add_tile_group(&mut tile_groups, &line),
             MapReadMode::Collisions => add_collision_group(&mut collision_groups, &line),
+            MapReadMode::Entities => add_entity(&mut entities, &line),
             MapReadMode::Error => println!("ERROR: Cannot parse: {:?}", line),
         }
     }
@@ -53,6 +57,7 @@ pub fn parse_map(level_name: &str) -> MapBuilder {
         materials: materials,
         tile_groups: tile_groups,
         collision_groups: collision_groups,
+        entities: entities,
         level_name: level_name.to_string(),
     };
 
@@ -92,6 +97,16 @@ fn add_collision_group(collision_groups: &mut Vec<(Vec2, Vec2)>, line: &str) {
     let max_vec: Vec2 = get_vec2_from_string(max_size);
 
     collision_groups.push((min_vec, max_vec));
+}
+
+fn add_entity(entities: &mut Vec<(usize, Vec2)>, line: &str) {
+    let colon_idx: usize = line.find(":").unwrap();
+    let id_side = line[..colon_idx].trim();
+    let vec_side = line[(colon_idx+1)..].trim();
+    let id: usize  = id_side.parse().expect("Expecting usize!");
+    let position = get_vec2_from_string(vec_side);
+
+    entities.push((id, position));
 }
 
 fn get_vec2_from_string(line: &str) -> Vec2 {

@@ -3,7 +3,7 @@ extends Node2D
 @export var tile_map_name: String = "TileMap"
 @export var collision_map_name: String = "CollisionMap"
 @export var entity_map_name: String = "EntityMap"
-@export var path: String = "C:\\Users\\foreskin\\Desktop\\sum_good_shit\\programming\\rust\\practice_game\\new_dole_quest\\assets\\maps\\"
+@export_global_dir() var path: String = "../assets/maps/"
 @export var map_name: String = "map"
 @export var map_extension: String = ".map2d"
 
@@ -61,7 +61,7 @@ func _ready():
 func get_tuple_as_string(group: Array) -> String:
 	if group.size() != 2:
 		return ""
-		
+			
 	return str(group[0]) + ";" + str(group[1])
 	
 func is_directory_good() -> bool:
